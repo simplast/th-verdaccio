@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
       steps:
       - name: 'Use Node.js 13.x'
-       uses: actions/setup-node@master
-       with:
+        uses: actions/setup-node@master
+        with:
          node-version: 13.x
       - run:
          name: npm-verbosity
