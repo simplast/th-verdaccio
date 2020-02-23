@@ -32,6 +32,10 @@ jobs:
         npm build
   e2e-yarn:
     name: E2E yarn
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version: [10, 12, 13]
     runs-on: ubuntu-latest
     services:
       redis:
