@@ -5,8 +5,8 @@ on:
     - cron: '0 */12 * * *'
   push:
     branches:
-      - master
-
+#      - master
+      - '**'
 jobs:
   e2e-npm:
     strategy:
