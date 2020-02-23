@@ -28,4 +28,4 @@ jobs:
     - name: install deps
       run: npm install
     - name: compile webpack
-      run: npm start
+      run: ls -lsa
