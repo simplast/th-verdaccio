@@ -18,6 +18,7 @@ jobs:
         ports:
           - 4873:4873
     steps:
+    - uses: actions/checkout@master
     - name: Use Webpack app
       uses: ./.github/actions/webpack-app
     - name: npm-verbosity
