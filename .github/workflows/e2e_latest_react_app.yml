@@ -47,7 +47,7 @@ jobs:
         run: npm -g i yarn
       - name: create-react-app example
         run: |
-          yarn install create-react-app
+          yarn global add create-react-app
           mkdir app
           cd app
           yarn create-react-app my-cra-ts --template typescript && cd my-cra-ts
