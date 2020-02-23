@@ -9,6 +9,7 @@ jobs:
       ports:
         - 4873:4873
   e2e:
+    name: E2E
     runs-on: ubuntu-latest
      steps:
      - uses: actions/checkout@master
