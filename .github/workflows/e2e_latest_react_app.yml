@@ -23,11 +23,7 @@ jobs:
        name: npm-set-registry
        command: npm set registry http://0.0.0.0:4873
     - run:
-       name: create-registry-user
-       command: |
-         curl -X PUT http://0.0.0.0:4873/-/user/org.couchdb.user:test -H "Content-Type: application/json" -d '{"name":"test","password":"test","email":"test@example.com","type":"user"}' | node -pe 'JSON.parse(fs.readFileSync(0)).token' | xargs npm config set _authToken
-     - run:
-        name: npm-info-test
-        command: npm info verdaccio
+       name: npm-info-test
+       command: npm info verdaccio
 
 
