@@ -3,7 +3,7 @@ name: E2E Test Latest Verdaccio
 on: [push]
 
 jobs:
-  e2e:
+  e2e-npm:
     name: E2E npm
     runs-on: ubuntu-latest
     services:
@@ -22,10 +22,36 @@ jobs:
       run: npm set registry http://0.0.0.0:4873
     - name: install latest npm
       run: npm -g i npm
-    - name: install yarn
+    - name: create-react-app example
       run: |
         npx create-react-app my-cra-ts --template typescript && cd my-cra-ts
         npm build
+  e2e-yarn:
+    name: E2E yarn
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+    steps:
+      - name: 'Use Node.js 13.x'
+        uses: actions/setup-node@master
+        with:
+          node-version: 13.x
+      - name: npm-verbosity
+        run: npm config set loglevel verbose
+      - name: npm-set-registry
+        run: npm set registry http://0.0.0.0:4873
+      - name: install latest yarn
+        run: npm -g i yarn
+      - name: create-react-app example
+        run: |
+          yarn install create-react-app
+          mkdir app
+          cd app
+          yarn create-react-app my-cra-ts --template typescript && cd my-cra-ts
+          yarn build
 
 
 
