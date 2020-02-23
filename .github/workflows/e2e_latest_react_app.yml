@@ -4,6 +4,10 @@ on: [push]
 
 jobs:
   e2e-npm:
+    strategy:
+      fail-fast: false
+      matrix:
+        node_version: [10, 12, 13]
     name: E2E npm
     runs-on: ubuntu-latest
     services:
@@ -12,10 +16,10 @@ jobs:
         ports:
           - 4873:4873
     steps:
-    - name: 'Use Node.js 13.x'
-      uses: actions/setup-node@master
+    - name: Use Node ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
       with:
-       node-version: 13.x
+        node_version: ${{ matrix.node_version }}
     - name: npm-verbosity
       run: npm config set loglevel verbose
     - name: npm-set-registry
