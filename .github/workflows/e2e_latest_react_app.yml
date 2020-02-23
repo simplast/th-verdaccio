@@ -24,7 +24,7 @@ jobs:
       run: npm -g i npm
     - name: create-react-app example
       run: |
-        npx create-react-app my-cra-ts --template typescript && cd my-cra-ts
+        npx create-react-app my-cra-ts --template typescript && cd my-cra-ts --use-npm
         npm build
   e2e-yarn:
     name: E2E yarn
@@ -53,7 +53,7 @@ jobs:
           yarn create-react-app my-cra-ts --template typescript && cd my-cra-ts
           yarn build
   e2e-pnpm:
-    name: E2E yarn
+    name: E2E pnpm
     runs-on: ubuntu-latest
     services:
       redis:
@@ -69,11 +69,11 @@ jobs:
         run: npm config set loglevel verbose
       - name: npm-set-registry
         run: npm set registry http://0.0.0.0:4873
-      - name: install latest yarn
+      - name: install latest pnpm
         run: npm -g i pnpm
       - name: create-react-app example
         run: |
-          pnpm install --global create-react-app
+          pnpm install --global create-react-app --use-pnpm
           mkdir app && cd app
           pnpx create-react-app my-cra-ts --template typescript && cd my-cra-ts
           pnpm build
