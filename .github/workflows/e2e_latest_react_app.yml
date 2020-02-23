@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   e2e:
-    name: E2E
+    name: E2E npm
     runs-on: ubuntu-latest
     services:
       redis:
@@ -20,7 +20,12 @@ jobs:
       run: npm config set loglevel verbose
     - name: npm-set-registry
       run: npm set registry http://0.0.0.0:4873
-    - name: npm-info-test
-      run: npm info verdaccio
+    - name: install latest npm
+      run: npm -g i npm
+    - name: install yarn
+      run: |
+        npx create-react-app my-cra-ts --template typescript && cd my-cra-ts
+        npm build
+
 
 
