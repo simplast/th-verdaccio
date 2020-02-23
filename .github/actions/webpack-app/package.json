@@ -1,0 +1,15 @@
+{
+  "name": "webpack-app",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "private": true,
+  "devDependencies": {
+    "lodash": "^4.17.15",
+    "webpack-cli": "latest",
+    "webpack": "latest"
+  },
+  "scripts": {
+    "start": "webpack"
+  }
+}

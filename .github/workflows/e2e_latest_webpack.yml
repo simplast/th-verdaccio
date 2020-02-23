@@ -1,0 +1,30 @@
+name: E2E Test Webpack app
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  push:
+    branches:
+#      - master
+      - '**'
+
+jobs:
+  e2e-npm:
+    name: E2E npm
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+    steps:
+    - name: Use Webpack app
+      uses: ./.github/actions/webpack-app
+    - name: npm-verbosity
+      run: npm config set loglevel verbose
+    - name: npm-set-registry
+      run: npm set registry http://0.0.0.0:4873
+    - name: install deps
+      run: npm install
+    - name: compile webpack
+      run: npm start
