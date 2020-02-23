@@ -52,6 +52,31 @@ jobs:
           cd app
           yarn create-react-app my-cra-ts --template typescript && cd my-cra-ts
           yarn build
+  e2e-pnpm:
+    name: E2E yarn
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+    steps:
+      - name: 'Use Node.js 13.x'
+        uses: actions/setup-node@master
+        with:
+          node-version: 13.x
+      - name: npm-verbosity
+        run: npm config set loglevel verbose
+      - name: npm-set-registry
+        run: npm set registry http://0.0.0.0:4873
+      - name: install latest yarn
+        run: npm -g i pnpm
+      - name: create-react-app example
+        run: |
+          pnpm install --global create-react-app
+          mkdir app && cd app
+          pnpx create-react-app my-cra-ts --template typescript && cd my-cra-ts
+          pnpm build
 
 
 
