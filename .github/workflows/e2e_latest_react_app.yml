@@ -1,6 +1,11 @@
 name: E2E Test CRA Latest Verdaccio
 
-on: [push]
+on:
+  schedule:
+    - cron: '0 */12 * * *'
+  push:
+    branches:
+      - master
 
 jobs:
   e2e-npm:
@@ -8,8 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         node_version: [10, 12, 13]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     name: E2E npm
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     services:
       redis:
         image: verdaccio/verdaccio
@@ -36,7 +42,8 @@ jobs:
       fail-fast: false
       matrix:
         node_version: [10, 12, 13]
-    runs-on: ubuntu-latest
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
     services:
       redis:
         image: verdaccio/verdaccio
