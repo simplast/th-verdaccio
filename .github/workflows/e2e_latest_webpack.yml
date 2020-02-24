@@ -19,15 +19,13 @@ jobs:
           - 4873:4873
     steps:
     - uses: actions/checkout@master
-    - name: Use Webpack app
-      uses: ./.github/actions/webpack-app
     - name: npm-verbosity
       run: npm config set loglevel verbose
     - name: npm-set-registry
       run: npm set registry http://0.0.0.0:4873
-    #- name: install deps
-    #  run: npm install
+    - name: Use Webpack app
+      run: |
+        cd examples
+        npm install
     - name: compile webpack
       run: ls -lsa
-    - name: compile pwd
-      run: ls -lsa /example
