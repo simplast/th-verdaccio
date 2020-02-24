@@ -6,4 +6,4 @@ LABEL "com.github.actions.icon"="package"
 LABEL "com.github.actions.color"="#4b5e40"
 
 # Copy the action's code into the container
-COPY . .
+COPY . example/
