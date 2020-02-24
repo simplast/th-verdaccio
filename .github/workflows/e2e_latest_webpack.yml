@@ -25,7 +25,9 @@ jobs:
       run: npm config set loglevel verbose
     - name: npm-set-registry
       run: npm set registry http://0.0.0.0:4873
-    - name: install deps
-      run: npm install
+    #- name: install deps
+    #  run: npm install
     - name: compile webpack
       run: ls -lsa
+    - name: compile pwd
+        run: pwd
