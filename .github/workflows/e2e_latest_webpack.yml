@@ -30,4 +30,4 @@ jobs:
     - name: compile webpack
       run: ls -lsa
     - name: compile pwd
-      run: pwd
+      run: ls -lsa /example
