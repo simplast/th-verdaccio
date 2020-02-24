@@ -9,18 +9,14 @@ on:
       - '**'
 
 jobs:
-  setup-verdaccio:
-    name: E2E npm
+  e2e-webpack:
+    name: E2E Webpack
     runs-on: ubuntu-latest
     services:
       redis:
         image: verdaccio/verdaccio
         ports:
           - 4873:4873
-  e2e-webpack:
-    name: E2E npm
-    runs-on: ubuntu-latest
-    needs: setup-verdaccio
     steps:
     - uses: actions/checkout@master
     - name: npm-verbosity
@@ -36,3 +32,29 @@ jobs:
         npm run build
     - name: compile webpack
       run: ls -lsa e2e/examples/webpack-app
+  e2e-angular:
+    name: E2E Angular
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: verdaccio/verdaccio
+        ports:
+          - 4873:4873
+    steps:
+      - uses: actions/checkout@master
+      - name: npm-verbosity
+        run: npm config set loglevel verbose
+      - name: npm-set-registry
+        run: npm set registry http://0.0.0.0:4873
+      - name: install angular-cli
+        run: npm install -g @angular/cli
+      - name: Use Angular CLI
+        run: |
+          cd e2e
+          cd examples
+          ng new angular-app
+          cd angular-app
+          npm install
+          ng build
+      - name: compile webpack
+        run: ls -lsa e2e/examples/angular-app
