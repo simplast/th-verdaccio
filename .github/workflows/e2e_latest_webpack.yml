@@ -25,7 +25,9 @@ jobs:
       run: npm set registry http://0.0.0.0:4873
     - name: Use Webpack app
       run: |
+        cd e2e
         cd examples
+        cd webpack-app
         npm install
     - name: compile webpack
       run: ls -lsa
