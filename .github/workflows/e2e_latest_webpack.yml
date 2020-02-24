@@ -29,5 +29,6 @@ jobs:
         cd examples
         cd webpack-app
         npm install
+        npm run build
     - name: compile webpack
-      run: ls -lsa
+      run: ls -lsa e2e/examples/webpack-app
