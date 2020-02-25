@@ -7,7 +7,6 @@ on:
     branches:
 #      - master
       - '**'
-
 jobs:
   e2e-webpack:
     name: E2E Webpack
@@ -19,6 +18,9 @@ jobs:
           - 4873:4873
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
     - name: npm-verbosity
       run: npm config set loglevel verbose
     - name: npm-set-registry
@@ -44,7 +46,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '13.x'
+          node-version: '10.x'
       - name: npm-verbosity
         run: npm config set loglevel verbose
       - name: npm-set-registry
@@ -57,7 +59,6 @@ jobs:
           cd examples
           ng new angular-app
           cd angular-app
-          npm install
           ng build
       - name: list angular
         run: ls -lsa e2e/examples/angular-app

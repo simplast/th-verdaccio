@@ -11,7 +11,7 @@ on:
 jobs:
   e2e-npm:
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         node_version: [10, 12, 13]
     name: E2E npm
