@@ -7,8 +7,8 @@ module.exports = Object.assign({}, config, {
   collectCoverage: false,
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'ts'],
   testEnvironment: './env_babel.js',
-  globalSetup: './env_setup.js',
-  globalTeardown: './env_teardown.js',
+  globalSetup: './globalSetup.js',
+  globalTeardown: './globalTeardown.js',
   // testRegex: '(/test/e2e.*\\.spec)\\.ts',
   testRegex: '(/test_bk/*.*.spec)\\.ts',
 });

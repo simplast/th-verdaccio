@@ -7,9 +7,8 @@ import path from 'path';
 
 import * as __global from '../utils/global.js';
 import { pnpmGlobal } from '../utils/process';
+import { waitOnRegistry } from '../utils/registry';
 import { SETUP_VERDACCIO_PORT } from '../utils/utils';
-
-// import { waitOnRegistry } from '../utils/registry';
 
 const debug = buildDebug('verdaccio:e2e:setup');
 
@@ -46,23 +45,33 @@ module.exports = async () => {
       stdio: 'ignore',
     }
   );
+  debug('waiting on registry setup ...');
+  await waitOnRegistry(SETUP_VERDACCIO_PORT, 6000);
+  debug('registry setup done');
   // @ts-ignore
   global.registryProcess = childProcess;
   // await waitOnRegistry(SETUP_VERDACCIO_PORT);
   // publish current build version on local registry
   const rootFolder = path.normalize(path.join(process.cwd(), '../../'));
+  debug('root folder %o', rootFolder);
   // install the local changes to verdaccio
   // the published package will be installed from every suite
-  await pnpmGlobal(
-    rootFolder,
-    'publish',
-    '--filter',
-    ' ./packages',
-    '--access',
-    'public',
-    '--git-checks',
-    'false',
-    '--registry',
-    `http://localhost:${SETUP_VERDACCIO_PORT}`
-  );
+  try {
+    await pnpmGlobal(
+      rootFolder,
+      'publish',
+      '--filter',
+      ' ./packages',
+      '--access',
+      'public',
+      '--git-checks',
+      'false',
+      '--registry',
+      `http://localhost:${SETUP_VERDACCIO_PORT}`
+    );
+  } catch (err) {
+    console.error('global setup error: on publish global verdaccio');
+    console.error(err);
+    process.exit(1);
+  }
 };

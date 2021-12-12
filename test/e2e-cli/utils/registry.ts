@@ -49,7 +49,7 @@ export type Setup = {
   install: string;
 };
 
-export async function initialSetup(port: string | number): Promise<Setup> {
+export async function initialSetup(port: string): Promise<Setup> {
   // temp folder created on test_environment.ts
   // @ts-ignore
   const tempRootFolder = global.__namespace.getItem('dir-suite-root');
@@ -107,7 +107,7 @@ export function forkRegistry(
 ): Promise<ChildProcess> {
   debug('spawning registry for %o in port %o', verdaccioPath, port);
   return new Promise((resolve, reject) => {
-    let _childOptions = { silent: true, ...childOptions };
+    let _childOptions = { silent: false, ...childOptions };
     debug('options %o', _childOptions);
     debug('fork path %o', verdaccioPath);
     debug('args %o', args);

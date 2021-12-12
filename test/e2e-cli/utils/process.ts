@@ -20,6 +20,7 @@ export async function _exec(options: SpawnOptions, cmd, args): Promise<ExecOutpu
   debug(`ENV: ${JSON.stringify(env)}`);
   const spawnOptions = {
     cwd: options.cwd,
+    silent: false,
     stdio: options.stdio || 'pipe',
     ...(env ? { env } : {}),
   };
@@ -35,16 +36,25 @@ export async function _exec(options: SpawnOptions, cmd, args): Promise<ExecOutpu
 
   rl.on('line', function (line) {
     stdout += line;
+    process.stdout.write(line);
+  });
+
+  childProcess.on('data', (data) => {
+    console.log('-->', data);
+  });
+
+  childProcess.on('error', (err) => {
+    console.error('Failed to start subprocess.', err);
   });
 
   const err = new Error(`Running "${cmd} ${args.join(' ')}" returned error code `);
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     childProcess.on('exit', (error) => {
       if (!error) {
         resolve({ stdout, stderr });
       } else {
         err.message += `${error}...\n\nSTDOUT:\n${stdout}\n\nSTDERR:\n${stderr}\n`;
-        reject({ stdout, stderr: err });
+        throw err;
       }
     });
   });
@@ -59,17 +69,11 @@ export async function _exec(options: SpawnOptions, cmd, args): Promise<ExecOutpu
 //   return _exec({ waitForMatch: match, ...spawnOptions, silence: true }, cmd, args);
 // }
 
-export function pnpmGlobal(rootFolder, ...args) {
+export function pnpmGlobal(cwd, ...args) {
   const pnpmCmd = require.resolve('pnpm');
   debug('pnpmCommand %o', pnpmCmd);
-  debug('run pnpm on %o', rootFolder);
-  return _exec(
-    {
-      cwd: rootFolder,
-    },
-    process.execPath,
-    [pnpmCmd, ...args]
-  );
+  debug('run pnpm on %o', cwd);
+  return _exec({ cwd }, process.execPath, [pnpmCmd, ...args]);
 }
 
 export function npm(...args): Promise<ExecOutput> {
@@ -98,5 +102,5 @@ export function nodeCwd(cwd, ...args): Promise<ExecOutput> {
 
 export function silentNpm(...args): Promise<ExecOutput> {
   debug('run silent npm %o', args);
-  return _exec({ silent: true }, 'npm', args);
+  return _exec({}, 'npm', args);
 }

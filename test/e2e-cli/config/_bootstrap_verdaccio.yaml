@@ -22,7 +22,7 @@ uplinks:
       maxSockets: 40
       maxFreeSockets: 10
 logs:
-  - { type: stdout, format: pretty, level: warn }
+  - { type: stdout, format: pretty, level: debug }
 
 packages:
   ## ui-theme still lives outside of the core project
