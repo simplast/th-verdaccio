@@ -958,6 +958,10 @@ class LocalStorage {
               reject(err);
             }
 
+            if (_.isEmpty(pkg?.versions)) {
+              return resolve({});
+            }
+
             const searchPackage = normalizeSearchPackage(pkg, searchItem);
             const searchPackageItem: searchUtils.SearchPackageItem = {
               package: searchPackage,

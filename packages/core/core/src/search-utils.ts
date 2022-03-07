@@ -32,11 +32,13 @@ export type SearchResults = {
   time: string;
 };
 
+// @deprecated use @verdaccio/types
 type PublisherMaintainer = {
   username: string;
   email: string;
 };
 
+// @deprecated use @verdaccio/types
 export type SearchPackageBody = {
   name: string;
   scope: string;
