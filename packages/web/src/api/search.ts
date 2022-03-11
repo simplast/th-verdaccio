@@ -1,10 +1,11 @@
 import buildDebug from 'debug';
 import { Router } from 'express';
+import _ from 'lodash';
 import { URLSearchParams } from 'url';
 
 import { IAuth } from '@verdaccio/auth';
 import { Config } from '@verdaccio/config';
-import { DIST_TAGS, errorUtils } from '@verdaccio/core';
+import { DIST_TAGS, errorUtils, searchUtils } from '@verdaccio/core';
 import { SearchQuery } from '@verdaccio/core/src/search-utils';
 import { SearchInstance } from '@verdaccio/store';
 import { Storage } from '@verdaccio/store';
@@ -13,6 +14,25 @@ import { Manifest } from '@verdaccio/types';
 import { $NextFunctionVer, $RequestExtend, $ResponseExtend } from './package';
 
 const debug = buildDebug('verdaccio:web:api:search');
+
+function checkAccess(pkg: any, auth: any, remoteUser): Promise<Manifest | null> {
+  return new Promise((resolve, reject) => {
+    auth.allow_access({ packageName: pkg?.package?.name }, remoteUser, function (err, allowed) {
+      if (err) {
+        if (err.status && String(err.status).match(/^4\d\d$/)) {
+          // auth plugin returns 4xx user error,
+          // that's equivalent of !allowed basically
+          allowed = false;
+          return resolve(null);
+        } else {
+          reject(err);
+        }
+      } else {
+        return resolve(allowed ? pkg : null);
+      }
+    });
+  });
+}
 
 function addSearchWebApi(storage: Storage, auth: IAuth, config: Config): Router {
   const router = Router(); /* eslint new-cap: 0 */
@@ -62,6 +82,7 @@ function addSearchWebApi(storage: Storage, auth: IAuth, config: Config): Router 
     ): Promise<void> {
       if (config.flags.searchRemote === true) {
         try {
+          let data;
           const abort = new AbortController();
           req.on('aborted', () => {
             abort.abort();
@@ -69,6 +90,8 @@ function addSearchWebApi(storage: Storage, auth: IAuth, config: Config): Router 
           const text: string = (req.params.anything as string) ?? '';
           // These values are declared as optimal by npm cli
           // FUTURE: could be overwritten by ui settings.
+          const size = 20;
+          const from = 0;
           const query: SearchQuery = {
             from: 0,
             maintenance: 0.5,
@@ -79,12 +102,29 @@ function addSearchWebApi(storage: Storage, auth: IAuth, config: Config): Router 
           };
           // @ts-ignore
           const urlParams = new URLSearchParams(query);
-          const packages = await storage.searchManager?.search({
+          data = await storage.searchManager?.search({
             query,
             url: `/-/v1/search?${urlParams.toString()}`,
             abort,
           });
-          next(packages);
+          console.log('data', data);
+          const checkAccessPromises: searchUtils.SearchItemPkg[] = await Promise.all(
+            data.map((pkgItem) => {
+              return checkAccess(pkgItem, auth, req.remote_user);
+            })
+          );
+
+          const final: searchUtils.SearchItemPkg[] = checkAccessPromises
+            .filter((i) => !_.isNull(i))
+            .slice(from, size);
+
+          // const response: searchUtils.SearchResults = {
+          //   objects: final,
+          //   total: final.length,
+          //   time: new Date().toUTCString(),
+          // };
+
+          next(final);
         } catch (err: any) {
           next(errorUtils.getInternalError(err.message));
         }
